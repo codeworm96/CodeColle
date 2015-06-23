@@ -20,11 +20,8 @@ module HTML
         return ""
       end
 
-      s = " "
-      attr.each do |k, v|
-        s << "#{k}=#{v.inspect} "
-      end
-      s
+      s = attr.map{ |k, v| "#{k}=#{v.inspect}" }.join(" ")
+      " " + s + " "
     end
 
     def text(s)
