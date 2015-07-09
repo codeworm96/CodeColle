@@ -4,7 +4,7 @@ module HTML
     def self.closed_tag(*arg)
       arg.each do |name|
         define_method name do |*attr|
-          @file.puts "<#{name}#{attr_to_str attr.last}/>"
+          @file.puts "<#{name}#{attr_to_str attr.last}>"
         end
       end
     end
@@ -13,6 +13,7 @@ module HTML
 
     def initialize(f)
       @file = f
+      @file.puts "<!DOCTYPE html>"
     end
 
     def attr_to_str(attr)
