@@ -7,6 +7,6 @@ see spec/listSpec.js
 #license
 MIT
 
-for [Jasmine](jasmine.github.io)
+for [Jasmine](https://jasmine.github.io)
 & list.js
 
