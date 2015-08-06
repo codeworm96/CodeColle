@@ -107,6 +107,19 @@ class TestTokenizer < Test::Unit::TestCase
     assert_equal(JSON::Token.new(:number, "2.0E-8"), @tokenizer.get_token)
     assert_equal(false, @tokenizer.has_more_token?)
   end
+
+  def test_put_back
+    @tokenizer = JSON::Tokenizer.new("  null  ")
+    assert_equal(true, @tokenizer.has_more_token?)
+    token = @tokenizer.get_token
+    assert_equal(JSON::Token.new(:null, "null"), token)
+    assert_equal(false, @tokenizer.has_more_token?)
+
+    @tokenizer.put_back(token)
+    assert_equal(true, @tokenizer.has_more_token?)
+    assert_equal(JSON::Token.new(:null, "null"), @tokenizer.get_token)
+    assert_equal(false, @tokenizer.has_more_token?)
+  end
 end
 
 

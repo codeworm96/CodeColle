@@ -33,6 +33,7 @@ module JSON
       load_rules
       @input = input
       remove_whitespace
+      @buf = nil
     end
 
     def load_rules
@@ -45,14 +46,24 @@ module JSON
     end
 
     def has_more_token?
-      !@input.empty?
+      !@buf.nil? || !@input.empty?
     end
 
     def remove_whitespace
       @input.lstrip!
     end
 
+    def put_back(token)
+      @buf = token
+    end
+
     def get_token
+      if !@buf.nil?
+        res = @buf
+        @buf = nil
+        return res
+      end
+
       match_data = nil
       type = nil
       @rules.each do |rule|
