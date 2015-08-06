@@ -38,6 +38,10 @@ module JSON
     def load_rules
       @rules = []
       @rules << Rule.new(:symbol, /\A[\[\]{},:]/)
+      @rules << Rule.new(:null, /\A(null)/)
+      @rules << Rule.new(:boolean, /\A(true|false)/)
+      @rules << Rule.new(:string, /\A(".*?[^\\]"|"")/)
+      @rules << Rule.new(:number, /\A[+-]?\d+(.\d+)?([eE][+-]?\d+)?/)
     end
 
     def has_more_token?
