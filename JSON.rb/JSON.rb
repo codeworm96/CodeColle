@@ -82,5 +82,96 @@ module JSON
 
   end
 
+  def self.parse(s)
+    parse_exp(Tokenizer.new(s))
+  end
+
+  def self.parse_exp(tokenizer)
+    token = tokenizer.get_token
+    if token.type == :symbol
+      if token.content == "["
+        tokenizer.put_back(token)
+        parse_arr(tokenizer)
+      elsif token.content == "{"
+        tokenizer.put_back(token)
+        parse_obj(tokenizer)
+      end
+    else
+      tokenizer.put_back(token)
+      parse_atom(tokenizer)
+    end
+  end
+
+  def self.parse_obj(tokenizer)
+    tokenizer.get_token
+    res = {};
+    while true
+      name = parse_string(tokenizer)
+      tokenizer.get_token
+      value = parse_exp(tokenizer)
+      res[name] = value
+      token = tokenizer.get_token
+      if token.type == :symbol && token.content == "}"
+        break
+      end
+    end
+    res
+  end
+
+  def self.parse_arr(tokenizer)
+    tokenizer.get_token
+    res = [];
+    while true
+      value = parse_exp(tokenizer)
+      res << value
+      token = tokenizer.get_token
+      if token.type == :symbol && token.content == "]"
+        break
+      end
+    end
+    res
+  end
+
+  def self.parse_number(tokenizer)
+    token = tokenizer.get_token
+    token.content.to_f
+  end
+
+  def self.parse_null(tokenizer)
+    tokenizer.get_token
+    nil
+  end
+
+  def self.parse_boolean(tokenizer)
+    token = tokenizer.get_token
+    if token.content == "true"
+      true
+    elsif token.content == "false"
+      false
+    end
+  end
+
+  #TODO: escape
+  def self.parse_string(tokenizer)
+    token = tokenizer.get_token
+    token.content[1..-2]
+  end
+
+  def self.parse_atom(tokenizer)
+    token = tokenizer.get_token
+    if token.type == :number
+      tokenizer.put_back(token)
+      parse_number(tokenizer)
+    elsif token.type == :boolean
+      tokenizer.put_back(token)
+      parse_boolean(tokenizer)
+    elsif token.type == :null
+      tokenizer.put_back(token)
+      parse_null(tokenizer)
+    elsif token.type == :string
+      tokenizer.put_back(token)
+      parse_string(tokenizer)
+    end
+  end
 end
 
